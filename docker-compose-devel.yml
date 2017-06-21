@@ -14,7 +14,9 @@ services:
 
     isard-hypervisor:
         restart: always
-        image: isard/hypervisor
+        build:
+            context: .
+            dockerfile: docker/hypervisor/Dockerfile
         links:
             - "rethinkdb-container"
         hostname: isard-hypervisor
@@ -35,7 +37,9 @@ services:
 
     isard-webapp:
         restart: always
-        image: isard/webapp
+        build:
+            context: .
+            dockerfile: docker/webapp/Dockerfile
         links:
             - "rethinkdb-container"
         hostname: isard-webapp
@@ -49,7 +53,9 @@ services:
 
     isard-engine:
         restart: always
-        image: isard/engine
+        build:
+            context: .
+            dockerfile: docker/engine/Dockerfile
         links:
             - "rethinkdb-container"
             - "isard-hypervisor"
