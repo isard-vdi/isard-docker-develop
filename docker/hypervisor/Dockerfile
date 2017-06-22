@@ -13,12 +13,13 @@ rm -f /lib/systemd/system/anaconda.target.wants/*;
 VOLUME [ “/sys/fs/cgroup” ]
 
 RUN dnf -y groupinstall "Virtualization" 
-RUN dnf -y install libvirt-daemon-driver-* libvirt-daemon libvirt-daemon-kvm qemu-kvm libguestfs-tools python3-pip && dnf clean all; \
-RUN dnf -y update; dnf clean all
+RUN dnf -y install libvirt-daemon-driver-* libvirt-daemon libvirt-daemon-kvm qemu-kvm libguestfs-tools python3-pip; dnf clean all; \
+#RUN dnf -y update; dnf clean all
 
 RUN systemctl enable libvirtd; systemctl enable virtlockd 
 
-RUN dnf install -y openssh-server openssh-clients arpwatch && dnf clean all;
+RUN dnf install -y openssh-server && dnf clean all;
+#RUN dnf install -y openssh-clients
 
 RUN echo "root:isard" |chpasswd
 RUN systemctl enable sshd
@@ -30,7 +31,7 @@ RUN sed -i 's|[#]*HostKey /etc/ssh/ssh_host_ecdsa_key|#HostKey /etc/ssh/ssh_host
 RUN sed -i 's|[#]*HostKey /etc/ssh/ssh_host_ed25519_key|#HostKey /etc/ssh/ssh_host_ed25519_key|g' /etc/ssh/sshd_config
 
 #html5 proxy
-RUN dnf install nginx -y
+RUN dnf install nginx -y; dnf clean all
 ADD ./docker/hypervisor/html5/nginx.conf /etc/nginx/
 RUN systemctl enable nginx;
 
@@ -63,11 +64,11 @@ ADD ./docker/hypervisor/network.xml /network.xml
 RUN systemctl enable customlibvirtpost
 
 RUN mkdir /root/.ssh
-RUN mkdir /isard
-RUN mkdir /isard/bases
-RUN mkdir /isard/groups
-RUN mkdir /isard/templates
-RUN mkdir /isard/isos
+#RUN mkdir /isard
+#RUN mkdir /isard/bases
+#RUN mkdir /isard/groups
+#RUN mkdir /isard/templates
+#RUN mkdir /isard/isos
 
 RUN export LIBGUESTFS_BACKEND=direct
 EXPOSE 22
