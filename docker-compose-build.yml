@@ -16,7 +16,7 @@ services:
         restart: always
         build:
             context: .
-            dockerfile: docker/hypervisor/Dockerfile
+            dockerfile: hypervisor/Dockerfile
         links:
             - "rethinkdb-container"
         hostname: isard-hypervisor
@@ -39,12 +39,10 @@ services:
         restart: always
         build:
             context: .
-            dockerfile: docker/webapp/Dockerfile
+            dockerfile: webapp/Dockerfile
         links:
             - "rethinkdb-container"
         hostname: isard-webapp
-        volumes:
-            - "source:/isard"
         expose:
             - "5000"
         networks:
@@ -57,13 +55,12 @@ services:
         restart: always
         build:
             context: .
-            dockerfile: docker/engine/Dockerfile
+            dockerfile: engine/Dockerfile
         links:
             - "rethinkdb-container"
             - "isard-hypervisor"
         volumes:
             - "sshkeys:/root/.ssh"
-            - "source:/isard"
         hostname: isard-engine
         networks:
             main:
@@ -90,4 +87,3 @@ networks:
     main:
 volumes:
     sshkeys:
-    source:

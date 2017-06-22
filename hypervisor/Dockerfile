@@ -12,8 +12,8 @@ rm -f /lib/systemd/system/basic.target.wants/*;\
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 VOLUME [ “/sys/fs/cgroup” ]
 
-RUN dnf -y groupinstall "Virtualization" 
-RUN dnf -y install libvirt-daemon-driver-* libvirt-daemon libvirt-daemon-kvm qemu-kvm libguestfs-tools python3-pip; dnf clean all; \
+#RUN dnf -y groupinstall "Virtualization" 
+RUN dnf -y install libvirt-daemon-driver-* libvirt-daemon libvirt-daemon-kvm qemu-kvm libguestfs-tools python3-pip; dnf clean all;
 #RUN dnf -y update; dnf clean all
 
 RUN systemctl enable libvirtd; systemctl enable virtlockd 
@@ -32,13 +32,13 @@ RUN sed -i 's|[#]*HostKey /etc/ssh/ssh_host_ed25519_key|#HostKey /etc/ssh/ssh_ho
 
 #html5 proxy
 RUN dnf install nginx -y; dnf clean all
-ADD ./docker/hypervisor/html5/nginx.conf /etc/nginx/
+ADD ./hypervisor/html5/nginx.conf /etc/nginx/
 RUN systemctl enable nginx;
 
-ADD ./docker/hypervisor/html5/requirements.pip3 /
+ADD ./hypervisor/html5/requirements.pip3 /
 RUN pip3 install -r requirements.pip3
-ADD ./docker/hypervisor/html5/start_proxy.py /
-ADD ./docker/hypervisor/html5/html5proxy.service /etc/systemd/system/
+ADD ./hypervisor/html5/start_proxy.py /
+ADD ./hypervisor/html5/html5proxy.service /etc/systemd/system/
 RUN systemctl enable html5proxy;
 
 #RUN echo "listen_tls = 0" >> /etc/libvirt/libvirtd.conf; \
@@ -57,10 +57,10 @@ echo 'spice_tls = 0' >> /etc/libvirt/qemu.conf; \
 echo 'spice_tls_x509_cert_dir = "/etc/pki/libvirt-spice"' >> /etc/libvirt/qemu.conf;
 RUN mkdir /etc/pki/libvirt-spice
 
-ADD ./docker/hypervisor/customlibvirtpost.service /usr/lib/systemd/system/customlibvirtpost.service
-ADD ./docker/hypervisor/customlibvirtpost.sh /customlibvirtpost.sh
+ADD ./hypervisor/customlibvirtpost.service /usr/lib/systemd/system/customlibvirtpost.service
+ADD ./hypervisor/customlibvirtpost.sh /customlibvirtpost.sh
 RUN chmod a+x /customlibvirtpost.sh
-ADD ./docker/hypervisor/network.xml /network.xml
+ADD ./hypervisor/network.xml /network.xml
 RUN systemctl enable customlibvirtpost
 
 RUN mkdir /root/.ssh

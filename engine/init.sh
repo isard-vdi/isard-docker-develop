@@ -16,5 +16,13 @@ mv /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
 #    	echo "The HYPERVISOR key has been regenerated"
 #	rm /root/.ssh/known_hosts
 ssh-keyscan isard-hypervisor > /root/.ssh/known_hosts
+while [ ! -s /root/.ssh/known_hosts ]
+do
+  sleep 2
+  echo "Waiting for isard-hypervisor to be online..."
+  ssh-keyscan isard-hypervisor > /root/.ssh/known_hosts
+done
+echo "isard-hypervisor online, starting engine..."
+
 #fi
 python3 /isard/run_docker_engine.py
