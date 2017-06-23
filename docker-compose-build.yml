@@ -74,7 +74,7 @@ services:
         ports:
             - "443:443"
         volumes:
-            - "./docker/nginx/:/etc/nginx/external"
+            - "./nginx/:/etc/nginx/external"
         hostname: nginx
         links:
             - "isard-webapp:isard-webapp"
