@@ -13,7 +13,7 @@ rm -f /lib/systemd/system/anaconda.target.wants/*;
 VOLUME [ “/sys/fs/cgroup” ]
 
 #RUN dnf -y groupinstall "Virtualization" 
-RUN dnf -y install libvirt-daemon-driver-* libvirt-daemon libvirt-daemon-kvm qemu-kvm libvirt-client libguestfs-tools python3-pip; dnf clean all;
+RUN dnf -y install libvirt-daemon-driver-* libvirt-daemon libvirt-daemon-kvm qemu-kvm libvirt-client virt-install libguestfs-tools python3-pip; dnf clean all;
 #RUN dnf -y update; dnf clean all
 
 RUN systemctl enable libvirtd; systemctl enable virtlockd 
