@@ -4,9 +4,6 @@ services:
         restart: always
         image: rethinkdb
         hostname: rethinkdb
-        ports:
-            - "8080:8080"
-        #    - "28015:28015"
         expose:
             - "28015"
         networks:
@@ -23,7 +20,6 @@ services:
             - "rethinkdb-container"
         hostname: isard-hypervisor
         ports:
-            - "55022:22"
             - "5900-5930:5900-5930"
         expose:
             - "22"

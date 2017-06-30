@@ -4,9 +4,8 @@ services:
         restart: always
         image: rethinkdb
         hostname: rethinkdb
-        ports:
-            - "8080:8080"
-            - "28015:28015"
+        expose:
+            - "28015"
         networks:
             main:
                 aliases:
@@ -19,14 +18,17 @@ services:
             - "rethinkdb-container"
         hostname: isard-hypervisor
         ports:
-            - "55022:22"
             - "5900-5930:5900-5930"
+        expose:
+            - "22"
         privileged: true
         volumes:
             - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
             - "sshkeys:/root/.ssh"
             - "/isard:/isard"
             - "/isard/builder:/root/.cache/virt-builder"
+            - "/etc/hostname:/hostname"
+            - "viewerkeys:/etc/pki/libvirt-spice"
         networks:
             main:
                 aliases:
@@ -39,6 +41,8 @@ services:
         links:
             - "rethinkdb-container"
         hostname: isard-webapp
+        volumes:
+            - "viewerkeys:/isard/install/viewer-certs"
         expose:
             - "5000"
         networks:
@@ -56,6 +60,8 @@ services:
         volumes:
             - "sshkeys:/root/.ssh"
         hostname: isard-engine
+        expose:
+            - "5555"
         networks:
             main:
                 aliases:
@@ -68,7 +74,7 @@ services:
         ports:
             - "443:443"
         volumes:
-            - "./docker/nginx/:/etc/nginx/external"
+            - "./dockers/nginx/:/etc/nginx/external"
         hostname: nginx
         links:
             - "isard-webapp:isard-webapp"
@@ -81,3 +87,4 @@ networks:
     main:
 volumes:
     sshkeys:
+    viewerkeys:
