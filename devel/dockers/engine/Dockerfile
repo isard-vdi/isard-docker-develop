@@ -14,7 +14,7 @@ RUN dnf remove git; dnf clean all
 WORKDIR /isard
 
 COPY ./dockers/isard.conf ./isard.conf
-
+COPY ./dockers/run_docker_engine.py ./run_docker_engine.py
 
 ######## Only in development
 RUN pip3 install ipython
