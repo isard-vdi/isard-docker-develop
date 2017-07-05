@@ -15,6 +15,7 @@ VOLUME [ “/sys/fs/cgroup” ]
 RUN dnf -y install libvirt-daemon-driver-* libvirt-daemon libvirt-daemon-kvm qemu-kvm libvirt-client libguestfs-tools \
 python3-pip virt-install; dnf clean all;
 
+RUN ln -s /usr/bin/qemu-kvm /usr/libexec/qemu-kvm
 RUN systemctl enable libvirtd; systemctl enable virtlockd 
 
 RUN dnf install -y openssh-server && dnf clean all;
