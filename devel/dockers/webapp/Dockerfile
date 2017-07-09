@@ -18,3 +18,5 @@ COPY ./dockers/run_docker_webapp.py ./run_docker_webapp.py
 
 RUN apt-get purge git; apt-get autoremove;  apt-get clean all
 RUN npm uninstall -g bower
+
+ADD ./config/host_name /isard/install/viewer-certs/host_name

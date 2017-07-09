@@ -33,7 +33,7 @@ services:
             - "sshkeys:/root/.ssh"
             - "/isard:/isard"
             - "/isard/builder:/root/.cache/virt-builder"
-            - "/etc/hostname:/hostname"
+            #- "/etc/hostname:/hostname"
             - "viewerkeys:/etc/pki/libvirt-spice"
         networks:
             main:
