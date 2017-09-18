@@ -3,6 +3,8 @@ mkdir -p /isard/src/isard
 git clone -b development https://github.com/isard-vdi/isard /isard/src/isard
 cp run_docker_* /isard/src/isard
 cp dockers/isard.conf /isard/src/isard
+cp dockers/run_docker_webapp.py /isard/src/isard
+cp dockers/run_docker_engine.py /isard/src/isard
 dnf install npm -y
 npm install -g bower
 bash -c "cd /isard/src/isard/install; bower install --allow-root"
