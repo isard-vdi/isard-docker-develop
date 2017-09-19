@@ -15,6 +15,8 @@ mv /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
 #then
 #    	echo "The HYPERVISOR key has been regenerated"
 #	rm /root/.ssh/known_hosts
+
+echo "Scanning isard-hypervisor key..."
 ssh-keyscan isard-hypervisor > /root/.ssh/known_hosts
 while [ ! -s /root/.ssh/known_hosts ]
 do

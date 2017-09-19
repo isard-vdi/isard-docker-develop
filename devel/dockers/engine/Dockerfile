@@ -1,4 +1,4 @@
-FROM fedora:latest
+FROM fedora:25
 MAINTAINER isard <info@isardvdi.com>
 
 RUN dnf install wget gcc redhat-rpm-config python3-devel openssl-devel libvirt-devel \

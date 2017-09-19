@@ -1,4 +1,4 @@
-FROM fedora:latest
+FROM fedora:25
 ENV container docker
 RUN dnf -y update; dnf clean all
 RUN dnf -y install systemd; dnf clean all; \
