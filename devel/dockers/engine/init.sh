@@ -29,7 +29,8 @@ echo "isard-hypervisor online, starting engine..."
 ######## Only on development
 echo -e "isard\nisard" | (passwd --stdin root)
 ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
-/usr/sbin/sshd -D
+/usr/sbin/sshd 
 ########
 
 #python3 /isard/python3 -m 'http.server'
+python3 /isard/run_docker_engine.py
