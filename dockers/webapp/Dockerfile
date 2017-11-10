@@ -14,8 +14,6 @@ RUN bower install --allow-root
 
 WORKDIR /isard
 COPY ./dockers/isard.conf ./isard.conf
-
+COPY ./dockers/run_docker_webapp.py ./run_docker_webapp.py
 RUN apt-get purge git; apt-get autoremove;  apt-get clean all
 RUN npm uninstall -g bower
-
-#CMD python3 /isard/run_webapp.py
