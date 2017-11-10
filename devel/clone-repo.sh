@@ -9,7 +9,7 @@ dnf install npm -y
 npm install -g bower
 bash -c "cd /isard/src/isard/install; bower install --allow-root"
 echo '\n\nSource is in /isard/src/isard'
-echo '\nYou can start containers with: docker-compose -f docker-compose-devel.yml up --build'
+echo '\nYou can start containers with: docker-compose -f devel.yml up --build'
 echo '    Engine: ssh root@host-machine -p 65022'
 echo '    Webapp: ssh root@host-machine -p 65023'
 echo 'Hypervisor: ssh root@host-machine -p 65024'
