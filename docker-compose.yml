@@ -49,7 +49,7 @@ services:
             main:
                 aliases:
                 - isard-webapp
-        command: python3 /isard/run_docker_webapp.py
+        command: python3 /isard/run_webapp.py
 
     isard-engine:
         restart: always
