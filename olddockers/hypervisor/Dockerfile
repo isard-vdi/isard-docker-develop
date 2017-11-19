@@ -1,6 +1,7 @@
 FROM fedora:25
 ENV container docker
-RUN dnf -y update; dnf clean all
+#RUN dnf -y update; dnf clean all
+RUN dnf makecache
 RUN dnf -y install systemd; dnf clean all; \
 (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
 rm -f /lib/systemd/system/multi-user.target.wants/*;\
@@ -12,15 +13,13 @@ rm -f /lib/systemd/system/basic.target.wants/*;\
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 VOLUME [ “/sys/fs/cgroup” ]
 
-#RUN dnf -y groupinstall "Virtualization" 
-RUN dnf -y install libvirt-daemon-driver-* libvirt-daemon libvirt-daemon-kvm qemu-kvm libvirt-client libguestfs-tools python3-pip virt-install; dnf clean all;
-#RUN dnf -y update; dnf clean all
+RUN dnf -y install libvirt-daemon-driver-* libvirt-daemon libvirt-daemon-kvm qemu-kvm libvirt-client libguestfs-tools \
+python3-pip virt-install; dnf clean all;
 
 RUN ln -s /usr/bin/qemu-kvm /usr/libexec/qemu-kvm
 RUN systemctl enable libvirtd; systemctl enable virtlockd 
 
 RUN dnf install -y openssh-server && dnf clean all;
-#RUN dnf install -y openssh-clients
 
 RUN echo "root:isard" |chpasswd
 RUN systemctl enable sshd
@@ -42,16 +41,6 @@ ADD ./dockers/hypervisor/html5/start_proxy.py /
 ADD ./dockers/hypervisor/html5/html5proxy.service /etc/systemd/system/
 RUN systemctl enable html5proxy;
 
-#RUN echo "listen_tls = 0" >> /etc/libvirt/libvirtd.conf; \
-#RUN echo 'listen_tcp = 1' >> /etc/libvirt/libvirtd.conf; \
-#echo 'tls_port = "16514"' >> /etc/libvirt/libvirtd.conf; \ 
-#echo 'tcp_port = "16509"' >> /etc/libvirt/libvirtd.conf; \
-#echo 'auth_tcp = "none"' >> /etc/libvirt/libvirtd.conf
-
-#RUN echo 'vnc_listen = "0.0.0.0"' >> /etc/libvirt/qemu.conf
-
-#RUN echo 'LIBVIRTD_ARGS="--listen"' >> /etc/sysconfig/libvirtd
-
 # libvirt configuration and certs
 RUN echo 'spice_listen = "0.0.0.0"' >> /etc/libvirt/qemu.conf; \
 echo 'spice_tls = 1' >> /etc/libvirt/qemu.conf; \
@@ -69,19 +58,12 @@ ADD ./dockers/hypervisor/network.xml /network.xml
 RUN systemctl enable customlibvirtpost
 
 RUN mkdir /root/.ssh
-#RUN mkdir /isard
-#RUN mkdir /isard/bases
-#RUN mkdir /isard/groups
-#RUN mkdir /isard/templates
-#RUN mkdir /isard/isos
 
 RUN export LIBGUESTFS_BACKEND=direct
 EXPOSE 22
 EXPOSE 16509
 EXPOSE 5900-5950
 EXPOSE 55900-55900
-
-ADD ./config/domain_name /domain_name
 
 VOLUME [ "/sys/fs/cgroup", "/isard" ]
 

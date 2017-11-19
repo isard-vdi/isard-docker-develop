@@ -6,11 +6,13 @@ then
 fi
 C=CA
 L=Barcelona
-O=$(</domain_name)
+O=$( cut -d '.' -f 2- <<< "$(cat /hostname)" )
 CN_CA=$O
 CN_HOST=*.$O
 OU=$O
 
+echo $O > /etc/pki/libvirt-spice/domain_name
+cp /hostname /etc/pki/libvirt-spice/host_name
 echo 'Using the openssl command, create a 2048-bit RSA key:'
 openssl genrsa -out cakey.pem 2048
 
