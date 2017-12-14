@@ -13,6 +13,7 @@ services:
 
     isard-hypervisor:
         restart: always
+        image: isard/hypervisor:latest
         build:
             context: .
             dockerfile: dockers/hypervisor/Dockerfile
@@ -40,6 +41,7 @@ services:
 
     isard-webapp:
         restart: always
+        image: isard/webapp:latest
         build:
             context: .
             dockerfile: dockers/webapp/Dockerfile
@@ -58,6 +60,7 @@ services:
 
     isard-engine:
         restart: always
+        image: isard/engine:latest
         build:
             context: .
             dockerfile: dockers/engine/Dockerfile

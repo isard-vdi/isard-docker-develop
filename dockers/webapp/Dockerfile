@@ -3,20 +3,18 @@ MAINTAINER isard <info@isard.com>
 
 COPY ./dockers/webapp/setup_4.x /setup_4.x
 RUN bash - setup_4.x
-RUN apt-get install git -y
-RUN npm install -g yarn
-RUN git clone -b develop https://github.com/isard-vdi/isard
 
+RUN apt-get install git -y
+RUN git clone -b develop https://github.com/isard-vdi/isard
 COPY ./dockers/webapp/requirements.pip3 /requirements.pip3
 RUN pip3 install -r requirements.pip3
 
 WORKDIR /isard/install
-#RUN ln -s /usr/bin/nodejs /usr/bin/node
-RUN yarn
+RUN npm install -g yarn
+RUN yarn --no-progress
 
 WORKDIR /isard
-COPY ./dockers/isard.conf ./isard.conf
-COPY ./dockers/run_docker_webapp.py ./run_docker_webapp.py
+RUN mv /isard/isard.conf.docker /isard/isard.conf
 
 RUN apt-get purge git; apt-get autoremove;  apt-get clean all
 RUN npm uninstall -g yarn

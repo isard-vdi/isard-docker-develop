@@ -8,3 +8,5 @@ pexpect==4.2.1
 paramiko==2.1.2
 lxml==3.7.3
 xmltodict==0.10.2
+graphyte==1.4
+numpy==1.12.0

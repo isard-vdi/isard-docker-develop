@@ -4,19 +4,21 @@ MAINTAINER isard <info@isardvdi.com>
 RUN dnf install wget gcc redhat-rpm-config python3-devel openssl-devel libvirt-devel \
     git openssh openssh-clients -y; dnf clean all
 RUN git clone -b develop https://github.com/isard-vdi/isard.git
+#WORKDIR /isard/
+#RUN git checkout develop
+#WORKDIR /
 COPY ./dockers/engine/requirements.pip3 /requirements.pip3
 RUN pip3 install -r requirements.pip3
-
 COPY ./dockers/engine/init.sh /
 COPY ./dockers/engine/config /root/.ssh/
 
-RUN dnf remove git; dnf clean all
+RUN dnf remove git -y; dnf clean all -y
 WORKDIR /isard
 
 COPY ./dockers/isard.conf ./isard.conf
 COPY ./dockers/run_docker_engine.py ./run_docker_engine.py
 
 ######## Only in development
-RUN pip3 install ipython
-RUN dnf install openssh-server passwd -y; dnf clean all
+#RUN pip3 install ipython
+#RUN dnf install openssh-server passwd -y; dnf clean all
 ########
