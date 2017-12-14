@@ -21,6 +21,7 @@ services:
         hostname: isard-hypervisor
         ports:
             - "5900-5930:5900-5930"
+            - "55900-55930:55900-55930"
         expose:
             - "22"
         privileged: true
@@ -30,7 +31,7 @@ services:
             - "/isard:/isard"
             - "/isard/builder:/root/.cache/virt-builder"
             - "/etc/hostname:/hostname"
-            - "viewerkeys:/etc/pki/libvirt-spice"
+            #- "viewerkeys:/etc/pki/libvirt-spice"
         networks:
             main:
                 aliases:

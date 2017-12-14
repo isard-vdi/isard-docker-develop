@@ -23,6 +23,7 @@ services:
         ports:
             - "65024:22"
             - "5900-5930:5900-5930"
+            - "55900-55930:55900-55930"
         expose:
             - "22"
         privileged: true
@@ -31,8 +32,8 @@ services:
             - "sshkeys:/root/.ssh"
             - "/isard:/isard"
             - "/isard/builder:/root/.cache/virt-builder"
-            #- "/etc/hostname:/hostname"
-            - "viewerkeys:/etc/pki/libvirt-spice"
+            - "/etc/hostname:/hostname"
+            #- "viewerkeys:/etc/pki/libvirt-spice"
         networks:
             main:
                 aliases:
@@ -48,7 +49,7 @@ services:
             - "rethinkdb-container"
         hostname: isard-webapp
         volumes:
-            - "viewerkeys:/isard/install/viewer-certs"
+            #- "viewerkeys:/isard/install/viewer-certs"
             - "/isard/src/isard:/isard"
         ports:
             - "65023:22"
@@ -58,7 +59,7 @@ services:
             main:
                 aliases:
                 - isard-webapp
-        command: python3 /isard/run_docker_webapp.py
+        command: python3 /isard/run_webapp.py
 
     isard-engine:
         restart: always

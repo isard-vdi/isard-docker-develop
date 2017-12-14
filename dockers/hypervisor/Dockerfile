@@ -53,14 +53,14 @@ RUN systemctl enable html5proxy;
 #RUN echo 'LIBVIRTD_ARGS="--listen"' >> /etc/sysconfig/libvirtd
 
 # libvirt configuration and certs
-RUN echo 'spice_listen = "0.0.0.0"' >> /etc/libvirt/qemu.conf; \
-echo 'spice_tls = 1' >> /etc/libvirt/qemu.conf; \
-echo 'spice_tls_x509_cert_dir = "/etc/pki/libvirt-spice"' >> /etc/libvirt/qemu.conf;
-RUN mkdir -p /etc/pki/libvirt-spice
-ADD ./dockers/hypervisor/generate-certs.service /usr/lib/systemd/system/generate-certs.service
-ADD ./dockers/hypervisor/auto-generate-certs.sh /
-RUN chmod a+x /auto-generate-certs.sh
-RUN systemctl enable generate-certs
+#RUN echo 'spice_listen = "0.0.0.0"' >> /etc/libvirt/qemu.conf; \
+#echo 'spice_tls = 1' >> /etc/libvirt/qemu.conf; \
+#echo 'spice_tls_x509_cert_dir = "/etc/pki/libvirt-spice"' >> /etc/libvirt/qemu.conf;
+#RUN mkdir -p /etc/pki/libvirt-spice
+#ADD ./dockers/hypervisor/generate-certs.service /usr/lib/systemd/system/generate-certs.service
+#ADD ./dockers/hypervisor/auto-generate-certs.sh /
+#RUN chmod a+x /auto-generate-certs.sh
+#RUN systemctl enable generate-certs
 
 ADD ./dockers/hypervisor/customlibvirtpost.service /usr/lib/systemd/system/customlibvirtpost.service
 ADD ./dockers/hypervisor/customlibvirtpost.sh /customlibvirtpost.sh
