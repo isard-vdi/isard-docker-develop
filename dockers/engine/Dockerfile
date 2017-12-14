@@ -3,7 +3,7 @@ MAINTAINER isard <info@isardvdi.com>
 
 RUN dnf install wget gcc redhat-rpm-config python3-devel openssl-devel libvirt-devel \
     git openssh openssh-clients -y; dnf clean all
-RUN git clone https://github.com/isard-vdi/isard.git
+RUN git clone -b develop https://github.com/isard-vdi/isard.git
 COPY ./dockers/engine/requirements.pip3 /requirements.pip3
 RUN pip3 install -r requirements.pip3
 
