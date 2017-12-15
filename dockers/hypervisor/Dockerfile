@@ -31,6 +31,8 @@ RUN sed -i 's|[#]*HostKey /etc/ssh/ssh_host_ecdsa_key|#HostKey /etc/ssh/ssh_host
 RUN sed -i 's|[#]*HostKey /etc/ssh/ssh_host_ed25519_key|#HostKey /etc/ssh/ssh_host_ed25519_key|g' /etc/ssh/sshd_config
 
 #html5 proxy
+RUN mkdir -p /var/www/html
+COPY ./dockers/hypervisor/html5/html /var/www/html
 RUN dnf install nginx -y; dnf clean all
 ADD ./dockers/hypervisor/html5/nginx.conf /etc/nginx/
 RUN systemctl enable nginx;
@@ -41,8 +43,8 @@ ADD ./dockers/hypervisor/html5/start_proxy.py /
 ADD ./dockers/hypervisor/html5/html5proxy.service /etc/systemd/system/
 RUN systemctl enable html5proxy;
 
-#RUN echo "listen_tls = 0" >> /etc/libvirt/libvirtd.conf; \
-#RUN echo 'listen_tcp = 1' >> /etc/libvirt/libvirtd.conf; \
+RUN echo "listen_tls = 0" >> /etc/libvirt/libvirtd.conf; 
+RUN echo 'listen_tcp = 1' >> /etc/libvirt/libvirtd.conf;
 #echo 'tls_port = "16514"' >> /etc/libvirt/libvirtd.conf; \ 
 #echo 'tcp_port = "16509"' >> /etc/libvirt/libvirtd.conf; \
 #echo 'auth_tcp = "none"' >> /etc/libvirt/libvirtd.conf
