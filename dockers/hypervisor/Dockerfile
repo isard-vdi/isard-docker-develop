@@ -42,8 +42,8 @@ ADD ./dockers/hypervisor/html5/start_proxy.py /
 ADD ./dockers/hypervisor/html5/html5proxy.service /etc/systemd/system/
 RUN systemctl enable html5proxy;
 
-#RUN echo "listen_tls = 0" >> /etc/libvirt/libvirtd.conf; \
-#RUN echo 'listen_tcp = 1' >> /etc/libvirt/libvirtd.conf; \
+RUN echo "listen_tls = 0" >> /etc/libvirt/libvirtd.conf; 
+RUN echo 'listen_tcp = 1' >> /etc/libvirt/libvirtd.conf;
 #echo 'tls_port = "16514"' >> /etc/libvirt/libvirtd.conf; \ 
 #echo 'tcp_port = "16509"' >> /etc/libvirt/libvirtd.conf; \
 #echo 'auth_tcp = "none"' >> /etc/libvirt/libvirtd.conf
@@ -53,7 +53,7 @@ RUN systemctl enable html5proxy;
 #RUN echo 'LIBVIRTD_ARGS="--listen"' >> /etc/sysconfig/libvirtd
 
 # libvirt configuration and certs
-#RUN echo 'spice_listen = "0.0.0.0"' >> /etc/libvirt/qemu.conf; \
+RUN echo 'spice_listen = "0.0.0.0"' >> /etc/libvirt/qemu.conf; 
 #echo 'spice_tls = 1' >> /etc/libvirt/qemu.conf; \
 #echo 'spice_tls_x509_cert_dir = "/etc/pki/libvirt-spice"' >> /etc/libvirt/qemu.conf;
 #RUN mkdir -p /etc/pki/libvirt-spice
