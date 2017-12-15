@@ -14,7 +14,6 @@ VOLUME [ “/sys/fs/cgroup” ]
 
 #RUN dnf -y groupinstall "Virtualization" 
 RUN dnf -y install libvirt-daemon-driver-* libvirt-daemon libvirt-daemon-kvm qemu-kvm libvirt-client libguestfs-tools python3-pip virt-install; dnf clean all;
-#RUN dnf -y update; dnf clean all
 
 RUN ln -s /usr/bin/qemu-kvm /usr/libexec/qemu-kvm
 RUN systemctl enable libvirtd; systemctl enable virtlockd 
@@ -53,14 +52,14 @@ RUN systemctl enable html5proxy;
 #RUN echo 'LIBVIRTD_ARGS="--listen"' >> /etc/sysconfig/libvirtd
 
 # libvirt configuration and certs
-#RUN echo 'spice_listen = "0.0.0.0"' >> /etc/libvirt/qemu.conf; \
-#echo 'spice_tls = 1' >> /etc/libvirt/qemu.conf; \
-#echo 'spice_tls_x509_cert_dir = "/etc/pki/libvirt-spice"' >> /etc/libvirt/qemu.conf;
-#RUN mkdir -p /etc/pki/libvirt-spice
-#ADD ./dockers/hypervisor/generate-certs.service /usr/lib/systemd/system/generate-certs.service
-#ADD ./dockers/hypervisor/auto-generate-certs.sh /
-#RUN chmod a+x /auto-generate-certs.sh
-#RUN systemctl enable generate-certs
+RUN echo 'spice_listen = "0.0.0.0"' >> /etc/libvirt/qemu.conf; \
+echo 'spice_tls = 1' >> /etc/libvirt/qemu.conf; \
+echo 'spice_tls_x509_cert_dir = "/etc/pki/libvirt-spice"' >> /etc/libvirt/qemu.conf;
+RUN mkdir -p /etc/pki/libvirt-spice
+ADD ./dockers/hypervisor/generate-certs.service /usr/lib/systemd/system/generate-certs.service
+ADD ./dockers/hypervisor/auto-generate-certs.sh /
+RUN chmod a+x /auto-generate-certs.sh
+RUN systemctl enable generate-certs
 
 ADD ./dockers/hypervisor/customlibvirtpost.service /usr/lib/systemd/system/customlibvirtpost.service
 ADD ./dockers/hypervisor/customlibvirtpost.sh /customlibvirtpost.sh
