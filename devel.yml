@@ -17,10 +17,14 @@ services:
     isard-hypervisor:
         restart: always
         image: isard/hypervisor
+        build:
+            context: .
+            dockerfile: dockers/hypervisor/Dockerfile
         links:
             - "rethinkdb-container"
         hostname: isard-hypervisor
         ports:
+            - "80:80"
             - "65024:22"
             - "5900-5930:5900-5930"
             - "55900-55930:55900-55930"
@@ -33,7 +37,7 @@ services:
             - "/isard:/isard"
             - "/isard/builder:/root/.cache/virt-builder"
             - "/etc/hostname:/hostname"
-            #- "viewerkeys:/etc/pki/libvirt-spice"
+            - "viewerkeys:/etc/pki/libvirt-spice"
         networks:
             main:
                 aliases:
@@ -42,6 +46,7 @@ services:
 
     isard-webapp:
         restart: always
+        image: isard/webapp
         build:
             context: .
             dockerfile: dockers/webapp/Dockerfile
@@ -49,7 +54,7 @@ services:
             - "rethinkdb-container"
         hostname: isard-webapp
         volumes:
-            #- "viewerkeys:/isard/install/viewer-certs"
+            - "viewerkeys:/isard/install/viewer-certs"
             - "/isard/src/isard:/isard"
         ports:
             - "65023:22"
@@ -63,6 +68,7 @@ services:
 
     isard-engine:
         restart: always
+        image: isard/engine
         build:
             context: .
             dockerfile: dockers/engine/Dockerfile
