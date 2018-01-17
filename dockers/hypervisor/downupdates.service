@@ -1,0 +1,10 @@
+[Unit]
+Description=Start download updates service
+After=libvirtd.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /downupdates.py
+
+[Install]
+WantedBy=multi-user.target

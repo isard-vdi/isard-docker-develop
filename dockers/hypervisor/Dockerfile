@@ -69,6 +69,10 @@ RUN chmod a+x /customlibvirtpost.sh
 ADD ./dockers/hypervisor/network.xml /network.xml
 RUN systemctl enable customlibvirtpost
 
+ADD ./dockers/hypervisor/downupdates.service /usr/lib/systemd/system/downupdates.service
+ADD ./dockers/hypervisor/downupdates.py /downupdates.py
+#RUN systemctl enable downupdates
+
 RUN mkdir /root/.ssh
 #RUN mkdir /isard
 #RUN mkdir /isard/bases
@@ -86,6 +90,9 @@ ADD ./config/domain_name /domain_name
 
 VOLUME [ "/sys/fs/cgroup", "/isard" ]
 
+# resources client
+RUN pip3 install requests rethinkdb
+ADD ./dockers/hypervisor/downupdates.py /
 
 CMD ["/usr/sbin/init"]
 
