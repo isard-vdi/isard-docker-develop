@@ -4,6 +4,8 @@ services:
         restart: always
         image: rethinkdb
         hostname: rethinkdb
+        volumes:
+            - "/isard/src/database:/data"
         expose:
             - "28015"
         networks:

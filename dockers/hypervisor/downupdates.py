@@ -79,7 +79,7 @@ def run():
                         # Initial status
                         print('INITIAL STATUS')
                         pprint.pprint(c)
-                        path=c['new_val']['table']+'/'+c['new_val']['path'] if c['new_val']['table']=='media' else c['new_val']['create_dict']['hardware']['disks'][0]['file']
+                        path=c['new_val']['table']+'/'+c['new_val']['path'] if c['new_val']['table']=='media' else '/groups/'+c['new_val']['create_dict']['hardware']['disks'][0]['file']
                         downloadThreads[c['new_val']['id']]=DownloadThread(c['new_val']['table'],'/isard/'+path,c['new_val']['id'])
                         downloadThreads[c['new_val']['id']].daemon = True
                         downloadThreads[c['new_val']['id']].start()

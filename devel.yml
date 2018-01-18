@@ -4,6 +4,8 @@ services:
         restart: always
         image: rethinkdb
         hostname: rethinkdb
+        volumes:
+            - "/isard/src/database:/data"
         ports:
             - "8080:8080"
             - "28015:28015"
