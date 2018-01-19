@@ -9,3 +9,4 @@ netaddr==0.7.19
 rethinkdb==2.3.0.post6
 requests==2.13.0
 pyOpenSSL==17.0.0
+pynpm==0.1.1
