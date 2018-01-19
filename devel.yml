@@ -1,7 +1,7 @@
 version: '2'
 services:
     rethinkdb-container:
-        restart: always
+        #restart: always
         image: rethinkdb
         hostname: rethinkdb
         volumes:
@@ -17,7 +17,7 @@ services:
                 - rethinkdb
 
     isard-hypervisor:
-        restart: always
+        #restart: always
         image: isard/hypervisor
         build:
             context: .
@@ -47,7 +47,7 @@ services:
         command: /usr/sbin/init
 
     isard-webapp:
-        restart: always
+        #restart: always
         image: isard/webapp
         build:
             context: .
@@ -69,7 +69,7 @@ services:
         command: python3 /isard/run_webapp.py
 
     isard-engine:
-        restart: always
+        #restart: always
         image: isard/engine
         build:
             context: .
@@ -92,7 +92,7 @@ services:
         command: bash -c '/init.sh'
 
     nginx:
-        restart: always
+        #restart: always
         image: marvambass/nginx-ssl-secure
         ports:
             - "443:443"
