@@ -3,7 +3,7 @@ Description=Start download updates service
 After=libvirtd.service
 
 [Service]
-Type=oneshot
+Type=simple
 ExecStart=/usr/bin/python3 /downupdates.py
 
 [Install]

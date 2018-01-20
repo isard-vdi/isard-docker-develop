@@ -45,7 +45,7 @@ class DownloadThread(threading.Thread,object):
                 response = requests.get(url+'/storage/'+self.table+'/'+self.path.split('/')[-1], headers={'Authorization':code}, stream=True)
                 total_length = response.headers.get('content-length')
                 
-                r.table(self.table).get(self.id).update({'status':'DownloadInProgress'}).run(rdb_conn)
+                r.table(self.table).get(self.id).update({'status':'Downloading'}).run(rdb_conn)
                 if total_length is None: # no content length header
                     f.write(response.content)
                 else:
@@ -62,8 +62,9 @@ class DownloadThread(threading.Thread,object):
                         predl=done
                     print('Finish: '+self.path)
                     r.table(self.table).get(self.id).update({'status':'Stopped'}).run(rdb_conn)
-                    time.sleep(2)
-                    r.table(self.table).get(self.id).update({'status':'Updating'}).run(rdb_conn)
+                    if self.table == 'domains':
+                        #time.sleep(2)
+                        r.table(self.table).get(self.id).update({'status':'Updating'}).run(rdb_conn)
         except Exception as e:
             print('Download exception: '+str(e))
         rdb_conn.close()
@@ -75,12 +76,10 @@ def run():
             for c in r.table('media').get_all(r.args(['DownloadStarting','Downloading']),index='status').pluck('id','path','isard-web','status').merge({'table':'media'}).changes(include_initial=True).union(
                     r.table('domains').get_all(r.args(['DownloadStarting','Downloading']),index='status').pluck('id','create_dict','isard-web','status').merge({"table": "domains"}).changes(include_initial=True)).run(rdb_conn):
                 try:
-                    if 'old_val' not in c:
+                    if 'old_val' not in c or c['old_val'] is None:
                         # Initial status
-                        print('INITIAL STATUS')
-                        pprint.pprint(c)
-                        path=c['new_val']['table']+'/'+c['new_val']['path'] if c['new_val']['table']=='media' else '/groups/'+c['new_val']['create_dict']['hardware']['disks'][0]['file']
-                        downloadThreads[c['new_val']['id']]=DownloadThread(c['new_val']['table'],'/isard/'+path,c['new_val']['id'])
+                        path='/'+c['new_val']['table']+'/'+c['new_val']['path'] if c['new_val']['table']=='media' else '/groups/'+c['new_val']['create_dict']['hardware']['disks'][0]['file']
+                        downloadThreads[c['new_val']['id']]=DownloadThread(c['new_val']['table'],'/isard'+path,c['new_val']['id'])
                         downloadThreads[c['new_val']['id']].daemon = True
                         downloadThreads[c['new_val']['id']].start()
                         pprint.pprint(downloadThreads)
@@ -89,4 +88,3 @@ def run():
                     print('DomainsStatusThread error:'+str(e))
 
 run()
-
