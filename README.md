@@ -3,15 +3,18 @@
 ## Start a complete virtualization environtment
 
 - Install docker & docker-compose: https://docs.docker.com/compose/install/
-	For your convenience there is a Fedora25 automated script on install folder
+	For your convenience there is a Fedora automated script on install folder
 
-- Run: docker-compose up
+- Run: docker-compose up -d
 	It will download images and start containers. When finished connect to:
 	https://<your-ip>
 
-## Defaults
+NOTE: Containers will start automatically next time you start or restart docker service (systemctl start docker)
 
-Default user is admin and passwd isard.
+## Wizard
+
+Installation wizard is provided for first time installation on https://<your-ip>
+NOTE: Please check download updates to get example domains ready to use
 
 ## First virtual machine
 
