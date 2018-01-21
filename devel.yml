@@ -101,6 +101,8 @@ services:
         hostname: nginx
         links:
             - "isard-webapp:isard-webapp"
+        logging:
+            - driver: "none"
         networks:
             main:
                 aliases:
