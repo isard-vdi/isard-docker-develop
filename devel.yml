@@ -1,5 +1,28 @@
 version: '2'
 services:
+    grafana:
+        image: kamon/grafana_graphite
+        container_name: isard-grafana
+        hostname: isard-grafana
+        ports:
+          - "8180:80"
+          - "8181:81"
+          - "8125:8125/udp"
+          - "8126:8126"
+          - "2003:2003"
+        expose:
+          - "2003"
+        volumes:
+          - /isard/src/grafana/data/whisper:/opt/graphite/storage/whisper
+          - /isard/src/grafana/data/grafana:/opt/grafana/data
+          - /isard/src/grafana/log/graphite:/opt/graphite/storage/log
+          - /isard/src/grafana/log/supervisor/log/supervisor:/var/log/supervisor
+          - ./dockers/grafana/dashboards:/src/dashboards
+        networks:
+            main:
+                aliases:
+                - grafana
+                
     rethinkdb-container:
         #restart: always
         image: rethinkdb
