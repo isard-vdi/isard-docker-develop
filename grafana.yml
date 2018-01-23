@@ -21,7 +21,7 @@ services:
         networks:
             main:
                 aliases:
-                - grafana
+                - isard-grafana
                 
     rethinkdb-container:
         #restart: always
