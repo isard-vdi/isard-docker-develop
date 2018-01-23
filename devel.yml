@@ -102,7 +102,7 @@ services:
         links:
             - "isard-webapp:isard-webapp"
         logging:
-            - driver: "none"
+            driver: "none"
         networks:
             main:
                 aliases:
