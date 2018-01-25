@@ -55,6 +55,8 @@ services:
             - "viewerkeys:/isard/install/viewer-certs"
         expose:
             - "5000"
+        environment:
+            PYTHONUNBUFFERED: 0
         networks:
             main:
                 aliases:
@@ -75,6 +77,8 @@ services:
         hostname: isard-engine
         expose:
             - "5555"
+        environment:
+            PYTHONUNBUFFERED: 0
         networks:
             main:
                 aliases:
