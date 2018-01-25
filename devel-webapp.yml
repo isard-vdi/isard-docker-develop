@@ -46,30 +46,6 @@ services:
                 - isard-hypervisor
         command: /usr/sbin/init
 
-    isard-webapp:
-        #restart: always
-        image: isard/webapp
-        build:
-            context: .
-            dockerfile: dockers/webapp/Dockerfile
-        links:
-            - "rethinkdb-container"
-        hostname: isard-webapp
-        volumes:
-            - "viewerkeys:/isard/install/viewer-certs"
-            - "/isard/src/isard:/isard"
-        ports:
-            - "65023:22"
-        expose:
-            - "5000"
-        environment:
-            PYTHONUNBUFFERED: 0
-        networks:
-            main:
-                aliases:
-                - isard-webapp
-        command: python3 /isard/run_webapp.py
-
     isard-engine:
         #restart: always
         image: isard/engine
@@ -95,23 +71,6 @@ services:
                 aliases:
                 - isard-engine
         command: bash -c '/init.sh'
-
-    nginx:
-        #restart: always
-        image: marvambass/nginx-ssl-secure
-        ports:
-            - "443:443"
-        volumes:
-            - "./dockers/nginx/:/etc/nginx/external"
-        hostname: nginx
-        links:
-            - "isard-webapp:isard-webapp"
-        logging:
-            driver: "none"
-        networks:
-            main:
-                aliases:
-                - nginx
 
 networks:
     main:
