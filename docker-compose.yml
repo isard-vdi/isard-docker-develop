@@ -61,7 +61,7 @@ services:
             main:
                 aliases:
                 - isard-webapp
-        command: python3 /isard/run_webapp.py
+        command: bash -c '/init.sh'
 
     isard-engine:
         restart: always

@@ -9,10 +9,11 @@ RUN pip3 install -r requirements.pip3
 COPY ./dockers/engine/init.sh /
 COPY ./dockers/engine/config /root/.ssh/
 RUN chmod 600 /root/.ssh/config
-RUN dnf remove git -y; dnf clean all -y
+RUN dnf clean all -y
 WORKDIR /isard
 RUN mv /isard/isard.conf.docker /isard/isard.conf
 RUN dnf install openssh-clients -y
+RUN mkdir /isard/logs
 ######## Only in development
 #RUN pip3 install ipython
 #RUN dnf install openssh-server passwd -y; dnf clean all

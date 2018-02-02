@@ -16,7 +16,8 @@ RUN npm install -g yarn
 WORKDIR /isard
 RUN mv /isard/isard.conf.docker /isard/isard.conf
 
-RUN apt-get purge git; apt-get autoremove;  apt-get clean all
+RUN apt-get autoremove;  apt-get clean all
 #RUN npm uninstall -g yarn
 
 #ADD ./config/host_name /isard/install/viewer-certs/host_name
+COPY ./dockers/webapp/init.sh /
