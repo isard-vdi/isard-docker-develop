@@ -32,15 +32,15 @@ RUN sed -i 's|UsePAM no|UsePAM yes|g' /etc/ssh/sshd_config
 
 #html5 proxy
 RUN mkdir -p /var/www/html
-COPY ./dockers/hypervisor/html5/html /var/www/html
+COPY html5/html /var/www/html
 RUN dnf install nginx -y; dnf clean all
-ADD ./dockers/hypervisor/html5/nginx.conf /etc/nginx/
+ADD html5/nginx.conf /etc/nginx/
 RUN systemctl enable nginx;
 
-ADD ./dockers/hypervisor/html5/requirements.pip3 /
+ADD html5/requirements.pip3 /
 RUN pip3 install -r requirements.pip3
-ADD ./dockers/hypervisor/html5/start_proxy.py /
-ADD ./dockers/hypervisor/html5/html5proxy.service /etc/systemd/system/
+ADD html5/start_proxy.py /
+ADD html5/html5proxy.service /etc/systemd/system/
 RUN systemctl enable html5proxy;
 
 RUN echo "listen_tls = 0" >> /etc/libvirt/libvirtd.conf; 
@@ -58,15 +58,15 @@ RUN echo 'spice_listen = "0.0.0.0"' >> /etc/libvirt/qemu.conf; \
 echo 'spice_tls = 1' >> /etc/libvirt/qemu.conf; \
 echo 'spice_tls_x509_cert_dir = "/etc/pki/libvirt-spice"' >> /etc/libvirt/qemu.conf;
 RUN mkdir -p /etc/pki/libvirt-spice
-ADD ./dockers/hypervisor/generate-certs.service /usr/lib/systemd/system/generate-certs.service
-ADD ./dockers/hypervisor/auto-generate-certs.sh /
+ADD generate-certs.service /usr/lib/systemd/system/generate-certs.service
+ADD auto-generate-certs.sh /
 RUN chmod a+x /auto-generate-certs.sh
 RUN systemctl enable generate-certs
 
-ADD ./dockers/hypervisor/customlibvirtpost.service /usr/lib/systemd/system/customlibvirtpost.service
-ADD ./dockers/hypervisor/customlibvirtpost.sh /customlibvirtpost.sh
+ADD customlibvirtpost.service /usr/lib/systemd/system/customlibvirtpost.service
+ADD customlibvirtpost.sh /customlibvirtpost.sh
 RUN chmod a+x /customlibvirtpost.sh
-ADD ./dockers/hypervisor/network.xml /network.xml
+ADD network.xml /network.xml
 RUN systemctl enable customlibvirtpost
 
 
