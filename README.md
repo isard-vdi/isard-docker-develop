@@ -1,5 +1,8 @@
 # IsardVDI dockers
 
+IMPORTANT: It doesn't work as expected if host has ipv6 addresses!!
+
+
 ## Start a complete virtualization environtment
 
 - Install docker & docker-compose: https://docs.docker.com/compose/install/
