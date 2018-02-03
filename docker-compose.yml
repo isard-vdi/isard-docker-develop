@@ -1,11 +1,11 @@
 version: '2'
 services:
     rethinkdb-container:
-        restart: always
+        #restart: always
         image: rethinkdb
         hostname: rethinkdb
         volumes:
-            - "/isard/src/database:/data"
+            - "/isard/database:/data"
         expose:
             - "28015"
         networks:
@@ -14,11 +14,11 @@ services:
                 - rethinkdb
 
     isard-hypervisor:
-        restart: always
+        #restart: always
         image: isard/hypervisor
-        build:
-            context: .
-            dockerfile: dockers/hypervisor/Dockerfile
+        #build:
+        #    context: .
+        #    dockerfile: dockers/hypervisor/Dockerfile
         links:
             - "rethinkdb-container"
         hostname: isard-hypervisor
@@ -43,11 +43,11 @@ services:
         command: /usr/sbin/init
 
     isard-webapp:
-        restart: always
+        #restart: always
         image: isard/webapp
-        build:
-            context: .
-            dockerfile: dockers/webapp/Dockerfile
+        #build:
+        #    context: .
+        #    dockerfile: dockers/webapp/Dockerfile
         links:
             - "rethinkdb-container"
         hostname: isard-webapp
@@ -64,16 +64,17 @@ services:
         command: bash -c '/init.sh'
 
     isard-engine:
-        restart: always
+        #restart: always
         image: isard/engine
-        build:
-            context: .
-            dockerfile: dockers/engine/Dockerfile
+        #build:
+        #    context: .
+        #    dockerfile: dockers/engine/Dockerfile
         links:
             - "rethinkdb-container"
             - "isard-hypervisor"
         volumes:
             - "sshkeys:/root/.ssh"
+            - "/isard/logs:/isard/logs"
         hostname: isard-engine
         expose:
             - "5555"
@@ -86,7 +87,7 @@ services:
         command: bash -c '/init.sh'
 
     nginx:
-        restart: always
+        #restart: always
         image: marvambass/nginx-ssl-secure
         ports:
             - "443:443"
