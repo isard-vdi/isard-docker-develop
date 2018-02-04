@@ -83,8 +83,6 @@ EXPOSE 16509
 EXPOSE 5900-5950
 EXPOSE 55900-55900
 
-ADD ./config/domain_name /domain_name
-
 VOLUME [ "/sys/fs/cgroup", "/isard" ]
 
 CMD ["/usr/sbin/init"]

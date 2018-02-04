@@ -6,7 +6,7 @@ then
 fi
 C=CA
 L=Barcelona
-O=$(</domain_name)
+O=localdomain
 CN_CA=$O
 CN_HOST=*.$O
 OU=$O
