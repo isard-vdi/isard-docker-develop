@@ -6,10 +6,20 @@ IMPORTANT: It doesn't work as expected if host has ipv6 addresses!!
 ## Start a complete virtualization environtment
 
 - Install docker & docker-compose: https://docs.docker.com/compose/install/
+
 	For your convenience there is a Fedora automated script on install folder
 
+- Download or build the images:
+
+    To download the images run:
+    docker-compose pull
+
+    To build the images run:
+    docker-compose build
+
 - Run: docker-compose up -d
-	It will download images and start containers. When finished connect to:
+
+	It will start containers. When finished connect to:
 	https://<your-ip>
 
 NOTE: Containers will start automatically next time you start or restart docker service (systemctl start docker)
