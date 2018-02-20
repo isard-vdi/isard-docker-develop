@@ -13,7 +13,7 @@ RUN dnf clean all -y
 WORKDIR /isard
 RUN mv /isard/isard.conf.docker /isard/isard.conf
 RUN dnf install openssh-clients -y
-RUN mkdir /isard/logs
+# RUN mkdir /isard/logs
 ######## Only in development
 #RUN pip3 install ipython
 #RUN dnf install openssh-server passwd -y && dnf clean all
