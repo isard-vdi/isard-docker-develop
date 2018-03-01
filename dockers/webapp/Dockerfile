@@ -5,7 +5,7 @@ COPY setup_4.x /setup_4.x
 RUN bash - setup_4.x
 
 RUN apt-get install git -y
-RUN git clone -b develop https://github.com/isard-vdi/isard
+RUN git clone https://github.com/isard-vdi/isard
 COPY requirements.pip3 /requirements.pip3
 RUN pip3 install -r requirements.pip3
 
