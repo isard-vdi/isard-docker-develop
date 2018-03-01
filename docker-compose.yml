@@ -83,20 +83,22 @@ services:
                 - isard-engine
         command: bash -c '/init.sh'
 
-    nginx:
+    isard-nginx:
         #restart: always
-        image: marvambass/nginx-ssl-secure
+        image: isard/nginx
+        build:
+            context: dockers/nginx        
         ports:
             - "443:443"
         volumes:
             - "./dockers/nginx/:/etc/nginx/external"
-        hostname: nginx
+        hostname: isard-nginx
         links:
             - "isard-webapp:isard-webapp"
         networks:
             main:
                 aliases:
-                - nginx
+                - isard-nginx
 
 networks:
     main:
