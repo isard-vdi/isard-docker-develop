@@ -2,8 +2,8 @@ FROM alpine:3.8
 MAINTAINER isard <info@isard.com>
 #RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 RUN apk add qemu-system-x86_64 libvirt netcat-openbsd libvirt-daemon dbus polkit qemu-img
-
-RUN apk add openssh
+RUN ln -s /usr/bin/qemu-system-x86_64 /usr/bin/qemu-kvm
+RUN apk add openssh curl
 RUN ssh-keygen -A
 #RUN dnf install -y openssh-clients
 

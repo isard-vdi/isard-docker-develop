@@ -3,6 +3,7 @@ services:
     rethinkdb-container:
         #restart: always
         image: rethinkdb
+        #image: mterron/rethinkdb
         hostname: rethinkdb
         volumes:
             - "/isard/database:/data"
@@ -49,6 +50,7 @@ services:
             - "rethinkdb-container"
         hostname: isard-webapp
         volumes:
+            - "sshkeys:/root/.ssh"
             - "viewerkeys:/isard/install/viewer-certs"
         expose:
             - "5000"
