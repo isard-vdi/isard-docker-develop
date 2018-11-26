@@ -5,7 +5,6 @@ RUN apk add qemu-system-x86_64 libvirt netcat-openbsd libvirt-daemon dbus polkit
 RUN ln -s /usr/bin/qemu-system-x86_64 /usr/bin/qemu-kvm
 RUN apk add openssh curl
 RUN ssh-keygen -A
-#RUN dnf install -y openssh-clients
 
 RUN echo "root:isard" |chpasswd
 RUN sed -i 's|[#]*PermitRootLogin prohibit-password|PermitRootLogin yes|g' /etc/ssh/sshd_config
@@ -40,11 +39,6 @@ EXPOSE 55900-55900
 VOLUME ["/isard" ]
 
 RUN apk add --update bash
-#RUN apk add openrc
-
-#COPY init.sh /
-#RUN chmod a+x init.sh
-#CMD ["sh", "/init.sh"]
 
 RUN apk add supervisor
 RUN mkdir -p /var/log/supervisor
