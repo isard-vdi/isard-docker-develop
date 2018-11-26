@@ -1,10 +1,10 @@
 version: '2'
 services:
-    rethinkdb-container:
+    isard-database:
         #restart: always
         image: rethinkdb
         #image: mterron/rethinkdb
-        hostname: rethinkdb
+        hostname: isard-database
         volumes:
             - "/isard/database:/data"
         expose:
@@ -20,7 +20,7 @@ services:
         build:
             context: dockers/hypervisor
         links:
-            - "rethinkdb-container"
+            - "isard-database"
         hostname: isard-hypervisor
         ports:
             - "80:80"
@@ -41,14 +41,14 @@ services:
                 - isard-hypervisor
         command: /usr/bin/supervisord -c /etc/supervisord.conf
         
-    isard-webapp:
+    isard-app:
         #restart: always
-        image: isard/webapp
+        image: isard/app
         build:
-            context: dockers/webapp
+            context: dockers/app
         links:
-            - "rethinkdb-container"
-        hostname: isard-webapp
+            - "isard-database"
+        hostname: isard-app
         volumes:
             - "sshkeys:/root/.ssh"
             - "viewerkeys:/isard/install/viewer-certs"
@@ -61,7 +61,7 @@ services:
         networks:
             main:
                 aliases:
-                - isard-webapp
+                - isard-app
         command: bash -c '/init.sh'
 
 
@@ -76,7 +76,7 @@ services:
             - "./dockers/nginx/:/etc/nginx/external"
         hostname: isard-nginx
         links:
-            - "isard-webapp:isard-webapp"
+            - "isard-app"
         networks:
             main:
                 aliases:
