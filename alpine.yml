@@ -6,7 +6,7 @@ services:
         #image: mterron/rethinkdb
         hostname: isard-database
         volumes:
-            - "/isard/database:/data"
+            - "/isard/src/database:/data"
         expose:
             - "28015"
         networks:
