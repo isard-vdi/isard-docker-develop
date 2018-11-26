@@ -52,6 +52,7 @@ services:
         volumes:
             - "sshkeys:/root/.ssh"
             - "viewerkeys:/isard/install/viewer-certs"
+            - "/isard/src/logs:/isard/logs"
         expose:
             - "5000"
         environment:
