@@ -11,6 +11,8 @@ services:
             - "28015:28015"
         expose:
             - "28015"
+        logging:
+            driver: none
         networks:
             main:
                 aliases:
@@ -38,6 +40,8 @@ services:
             - "/isard/builder:/root/.cache/virt-builder"
             - "/etc/hostname:/hostname"
             - "viewerkeys:/etc/pki/libvirt-spice"
+        logging:
+            driver: none
         networks:
             main:
                 aliases:
@@ -81,6 +85,8 @@ services:
         volumes:
             - "./dockers/nginx/:/etc/nginx/external"
         hostname: isard-nginx
+        logging:
+            driver: none
         links:
             - "isard-app"
         networks:

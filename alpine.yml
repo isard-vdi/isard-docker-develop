@@ -7,6 +7,8 @@ services:
         hostname: isard-database
         volumes:
             - "/isard/src/database:/data"
+        logging:
+            driver: none
         expose:
             - "28015"
         networks:
@@ -35,6 +37,8 @@ services:
             - "/isard/builder:/root/.cache/virt-builder"
             - "/etc/hostname:/hostname"
             - "viewerkeys:/etc/pki/libvirt-spice"
+        logging:
+            driver: none
         networks:
             main:
                 aliases:
@@ -76,6 +80,8 @@ services:
         volumes:
             - "./dockers/nginx/:/etc/nginx/external"
         hostname: isard-nginx
+        logging:
+            driver: none
         links:
             - "isard-app"
         networks:
