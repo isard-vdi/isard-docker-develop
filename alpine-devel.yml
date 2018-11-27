@@ -1,0 +1,98 @@
+version: '2'
+services:
+    isard-database:
+        #restart: always
+        image: rethinkdb
+        #image: mterron/rethinkdb
+        hostname: isard-database
+        volumes:
+            - "/isard/database:/data"
+        ports:
+            - "8080:8080"
+            - "28015:28015"
+        expose:
+            - "28015"
+        networks:
+            main:
+                aliases:
+                - rethinkdb
+
+    isard-hypervisor:
+        #restart: always
+        image: isard/hypervisor
+        build:
+            context: dockers/hypervisor
+        links:
+            - "isard-database"
+        hostname: isard-hypervisor
+        ports:
+            - "80:80"
+            - "65024:22"
+            - "5900-5930:5900-5930"
+            - "55900-55930:55900-55930"
+        expose:
+            - "22"
+        privileged: true
+        volumes:
+            - "sshkeys:/root/.ssh"
+            - "/isard:/isard"
+            - "/isard/builder:/root/.cache/virt-builder"
+            - "/etc/hostname:/hostname"
+            - "viewerkeys:/etc/pki/libvirt-spice"
+        networks:
+            main:
+                aliases:
+                - isard-hypervisor
+        command: /usr/bin/supervisord -c /etc/supervisord.conf
+        
+    isard-app:
+        #restart: always
+        image: isard/app
+        build:
+            context: dockers/app
+            dockerfile: Dockerfile_devel
+        links:
+            - "isard-database"
+        hostname: isard-app
+        volumes:
+            - "sshkeys:/root/.ssh"
+            - "viewerkeys:/isard/install/viewer-certs"
+            - "/isard/src/isard:/isard"
+        ports:
+            - "5555:5555"
+            - "65022:22"
+        expose:
+            - "5000"
+        environment:
+            PYTHONUNBUFFERED: 0
+        extra_hosts:
+            - "isard-engine:127.0.0.1"
+        networks:
+            main:
+                aliases:
+                - isard-app
+        command: bash -c '/init_devel.sh'
+
+
+    isard-nginx:
+        #restart: always
+        image: isard/nginx
+        build:
+            context: dockers/nginx        
+        ports:
+            - "443:443"
+        volumes:
+            - "./dockers/nginx/:/etc/nginx/external"
+        hostname: isard-nginx
+        links:
+            - "isard-app"
+        networks:
+            main:
+                aliases:
+                - isard-nginx
+
+networks:
+    main:
+volumes:
+    sshkeys:
+    viewerkeys:
