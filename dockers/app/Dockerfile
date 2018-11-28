@@ -18,5 +18,12 @@ RUN chmod 600 /root/.ssh/config
 RUN apk add --update bash
 RUN apk add yarn
 RUN apk add openssh-client
-COPY init.sh /
-CMD ["sh", "/init.sh"]
+
+RUN apk add supervisor
+RUN mkdir -p /var/log/supervisor
+COPY supervisord.conf /etc/supervisord.conf
+
+COPY certs.sh /
+CMD /usr/bin/supervisord -c /etc/supervisord.conf
+#CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+#CMD ["sh", "/init.sh"]
