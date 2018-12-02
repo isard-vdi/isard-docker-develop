@@ -30,6 +30,7 @@ echo "isard-hypervisor online, starting engine..."
 
 ######## Only on development
 echo -e "isard\nisard" | (passwd --stdin root)
+####echo -e "isard\nisard" | passwd root
 ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N ''
 #ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
 #/usr/sbin/sshd 
@@ -37,5 +38,6 @@ ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N ''
 
 #!/bin/bash
 cd /isard
+#not run in devel
 #git pull
-python3 run_webapp.py & python3 run_engine.py & sleep 1000000 
+#python3 run_webapp.py & python3 run_engine.py & sleep 1000000
