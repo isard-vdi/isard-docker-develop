@@ -1,0 +1,120 @@
+version: '2'
+services:
+    isard-database:
+        #restart: always
+        image: rethinkdb
+        hostname: isard-database
+        volumes:
+            - "/isard/src/database:/data"
+        ports:
+            - "8080:8080"
+            - "28015:28015"
+        expose:
+            - "28015"
+        logging:
+            driver: none
+        networks:
+            main:
+                aliases:
+                - rethinkdb
+
+    isard-hypervisor:
+        #restart: always
+        image: isard/hypervisor
+        build:
+            context: dockers/hypervisor
+        links:
+            - "isard-database"
+        hostname: isard-hypervisor
+        ports:
+            - "80:80"
+            - "65024:22"
+            - "5900-5930:5900-5930"
+            - "55900-55930:55900-55930"
+        expose:
+            - "22"
+        privileged: true
+        volumes:
+            - "sshkeys:/root/.ssh"
+            - "/isard:/isard"
+            - "/isard/builder:/root/.cache/virt-builder"
+            - "/etc/hostname:/hostname"
+            - "viewerkeys:/etc/pki/libvirt-spice"
+        logging:
+            driver: none
+        networks:
+            main:
+                aliases:
+                - isard-hypervisor
+        command: /usr/bin/supervisord -c /etc/supervisord.conf
+        
+    isard-app:
+        #restart: always
+        image: isard/app
+        build:
+            context: dockers/app
+        links:
+            - "isard-database"
+            - "isard-grafana"
+        hostname: isard-app
+        volumes:
+            - "sshkeys:/root/.ssh"
+            - "viewerkeys:/isard/install/viewer-certs"
+            - "/isard/src/isard:/isard"
+        ports:
+            - "65022:22"
+        expose:
+            - "5000"
+        environment:
+            PYTHONUNBUFFERED: 0
+        extra_hosts:
+            - "isard-engine:127.0.0.1"
+        networks:
+            main:
+                aliases:
+                - isard-app
+        command: /usr/bin/supervisord -c /etc/supervisord.conf
+
+
+    isard-nginx:
+        #restart: always
+        image: isard/nginx
+        build:
+            context: dockers/nginx        
+        ports:
+            - "443:443"
+        volumes:
+            - "./dockers/nginx/:/etc/nginx/external"
+        hostname: isard-nginx
+        logging:
+            driver: none
+        links:
+            - "isard-app"
+        networks:
+            main:
+                aliases:
+                - isard-nginx
+
+    isard-grafana:
+        #restart: always
+        image: grafana/grafana
+        environment:
+            - GF_SECURITY_ADMIN_PASSWORD=isard
+        ports:
+            - "3000:3000"
+        expose:
+            - "3000"
+        user: "472"
+        volumes:
+            - "/isard/src/grafana:/var/lib/grafana"
+        hostname: isard-grafana
+        networks:
+            main:
+                aliases:
+                - isard-grafana
+
+networks:
+    main:
+volumes:
+    sshkeys:
+    viewerkeys:
