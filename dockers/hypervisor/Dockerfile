@@ -1,6 +1,18 @@
 FROM alpine:latest
 MAINTAINER isard <info@isard.com>
-#RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+
+# INSTALL python3-pip
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN apk update
+RUN apk add --no-cache python3 && \
+    python3 -m ensurepip && \
+    rm -r /usr/lib/python*/ensurepip && \
+    pip3 install --upgrade pip setuptools && \
+    if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
+    if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/python3 /usr/bin/python; fi && \
+    rm -r /root/.cache
+RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
+
 RUN apk add qemu-system-x86_64 libvirt netcat-openbsd libvirt-daemon dbus polkit qemu-img
 RUN ln -s /usr/bin/qemu-system-x86_64 /usr/bin/qemu-kvm
 RUN apk add openssh curl
@@ -11,7 +23,6 @@ RUN sed -i 's|[#]*PermitRootLogin prohibit-password|PermitRootLogin yes|g' /etc/
 RUN sed -i 's|[#]*PasswordAuthentication yes|PasswordAuthentication yes|g' /etc/ssh/sshd_config
 RUN sed -i 's|[#]*ChallengeResponseAuthentication yes|ChallengeResponseAuthentication yes|g' /etc/ssh/sshd_config
 RUN sed -i 's|[#]*UsePAM yes|UsePAM yes|g' /etc/ssh/sshd_config
-
 
 RUN echo "listen_tls = 0" >> /etc/libvirt/libvirtd.conf; 
 RUN echo 'listen_tcp = 1' >> /etc/libvirt/libvirtd.conf;
@@ -31,9 +42,27 @@ ADD network.xml /network.xml
 
 RUN mkdir /root/.ssh
 
+RUN apk add nginx
+ADD nginx.conf /etc/nginx/
+
+#spice-html5 proxy
+RUN mkdir -p /var/www/html/spice
+COPY html5/html /var/www/html/spice
+
+ADD html5/requirements.pip3 /
+RUN pip3 install -r requirements.pip3
+ADD html5/start_proxy.py /
+
+#vnc-html5 proxy
+RUN mkdir -p /var/www/html/vnc
+COPY noVNC /var/www/html/vnc
+
+
 EXPOSE 22
+EXPOSE 80-82
 EXPOSE 16509
 EXPOSE 5900-5950
+EXPOSE 6080-6130
 EXPOSE 55900-55900
 
 VOLUME ["/isard" ]
