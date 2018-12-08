@@ -61,6 +61,7 @@ services:
             - "sshkeys:/root/.ssh"
             - "viewerkeys:/isard/install/viewer-certs"
             - "/isard/src/isard:/isard"
+            - "/isard/.ipython/profile_default:/root/.ipython/profile_default"
         ports:
             - "65022:22"
         expose:
