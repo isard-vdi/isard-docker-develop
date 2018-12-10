@@ -46,6 +46,7 @@ openssl x509 -req -days 3650 -in serverkey.csr -CA cacert.pem -CAkey cakey.pem \
 mv cacert.pem /etc/nginx/external/ca-cert.pem
 mv servercert.pem /etc/nginx/external/server-cert.pem
 mv serverkey.pem /etc/nginx/external/server-key.pem
+mv clientcert.pem /etc/nginx/external/client-cert.pem
 #chown qemu /etc/nginx/external/*
 chmod 440 /etc/nginx/external/*
 #systemctl restart libvirtd
