@@ -61,7 +61,7 @@ services:
         hostname: isard-app
         volumes:
             - "sshkeys:/root/.ssh"
-            - "viewerkeys:/isard/install/viewer-certs"
+            - "viewerkeys:/certs"
             - "/isard/src/isard:/isard"
         ports:
             - "65022:22"
@@ -86,12 +86,13 @@ services:
         ports:
             - "443:443"
         volumes:
-            - "./dockers/nginx/:/etc/nginx/external"
+            - "viewerkeys:/etc/nginx/external"
         hostname: isard-nginx
         logging:
             driver: none
         links:
             - "isard-app"
+            - "isard-hypervisor"
         networks:
             main:
                 aliases:

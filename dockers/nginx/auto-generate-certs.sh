@@ -5,7 +5,6 @@ then
     exit 1
 fi
 
-cp /dh.pem /etc/pki/libvirt-spice/
 
 C=CA
 L=Barcelona
@@ -25,8 +24,8 @@ echo 'Check your CA certificate:'
 openssl x509 -noout -text -in cacert.pem
 
 echo 'Create Server & client keys'
-openssl genrsa -des3 -out serverkey.pem 2048
-openssl genrsa -des3 -out clientkey.pem 2048
+openssl genrsa -out serverkey.pem 2048
+openssl genrsa -out clientkey.pem 2048
 
 echo 'Create a certificate signing request for the server. Remember to change the kvmhost.company.org address (used in the server certificate request) to the fully qualified domain name of your KVM host:'
 openssl req -new -key serverkey.pem -sha256 -out serverkey.csr \
@@ -44,11 +43,11 @@ openssl x509 -req -days 3650 -in serverkey.csr -CA cacert.pem -CAkey cakey.pem \
 
 #mkdir -p /etc/pki
 #mkdir -p /etc/pki/libvirt-spice
-cp cacert.pem /etc/pki/libvirt-spice/ca-cert.pem
-cp servercert.pem /etc/pki/libvirt-spice/server-cert.pem
-cp serverkey.pem /etc/pki/libvirt-spice/server-key.pem
-chown qemu /etc/pki/libvirt-spice/*
-chmod 440 /etc/pki/libvirt-spice/*
+mv cacert.pem /etc/nginx/external/ca-cert.pem
+mv servercert.pem /etc/nginx/external/server-cert.pem
+mv serverkey.pem /etc/nginx/external/server-key.pem
+#chown qemu /etc/nginx/external/*
+chmod 440 /etc/nginx/external/*
 #systemctl restart libvirtd
 #echo '4.- Modify /etc/libvirt/qemu.conf to activate certificate with spice'
 #echo '    spice_tls = 1'
