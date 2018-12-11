@@ -71,6 +71,8 @@ services:
             PYTHONUNBUFFERED: 0
         extra_hosts:
             - "isard-engine:127.0.0.1"
+        logging:
+            driver: none            
         networks:
             main:
                 aliases:
@@ -87,12 +89,8 @@ services:
             - "443:443"
         volumes:
             - "/isard/src/certs:/etc/nginx/external"
-        volumes_from:
-         - isard-app:container_name
-         - container:container_name:rw            
+            - "/isard/src/isard/webapp/static/viewers:/viewers"
         hostname: isard-nginx
-        logging:
-            driver: none
         links:
             - "isard-app"
             - "isard-hypervisor"

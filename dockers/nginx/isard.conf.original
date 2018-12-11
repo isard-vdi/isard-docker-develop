@@ -1,0 +1,69 @@
+upstream isard-fe {
+    server isard-app:5000 fail_timeout=0;
+}
+
+server {
+	listen 80;
+	server_name isard.localdomain;
+	return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen       443;
+    ssl on;
+    ssl_certificate "/etc/nginx/external/server-cert.pem";
+    ssl_certificate_key "/etc/nginx/external/server-key.pem";    
+    ssl_session_cache shared:SSL:1m;
+    ssl_session_timeout  10m;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers on;
+    server_name isard.localdomain;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubdomains";
+    client_max_body_size 1500M;
+
+    error_page 502 /502.html;
+
+    location /502.html{
+        root /errors;
+    }
+
+    location /502_isard_back.png{
+        root /errors;
+    }
+
+    location /socket.io {
+        proxy_pass          http://isard-app:5000/socket.io;
+        proxy_redirect	off;
+
+        proxy_set_header    Host             $host;
+        proxy_set_header    X-Real-IP        $remote_addr;
+        proxy_set_header    X-Forwarded-For  $proxy_add_x_forwarded_for;
+
+        # Websockets support
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        tcp_nodelay on;
+    }
+
+
+    location / {
+        proxy_pass http://isard-app:5000;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+	proxy_set_header REMOTE_ADDR $remote_addr;
+    }
+
+    location /admin/media {
+        proxy_pass http://isard-app:5000;
+
+        proxy_set_header    Host             $http_host;
+
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header REMOTE_ADDR $remote_addr;
+        client_max_body_size 10000M;
+    }
+
+}
+

@@ -1,7 +1,6 @@
 FROM marvambass/nginx-ssl-secure
 MAINTAINER isard <info@isard.com>
 
-#COPY dh.pem /etc/nginx/external/
 COPY isard.conf /etc/nginx/conf.d/
 RUN mkdir /errors
 ADD errors/* /errors/

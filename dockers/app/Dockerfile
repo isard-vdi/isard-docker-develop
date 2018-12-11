@@ -24,7 +24,6 @@ RUN mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisord.conf
 
 COPY certs.sh /
-COPY upload_cert.py /
 CMD /usr/bin/supervisord -c /etc/supervisord.conf
 #CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
 #CMD ["sh", "/init.sh"]
