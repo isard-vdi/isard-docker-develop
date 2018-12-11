@@ -17,7 +17,11 @@ IMPORTANT:
 
 EOF
 
-cp /dh.pem /etc/nginx/external/
+DH_PREGEN="/dh.pem"
+if [ -f "$DH_PREGEN" ]
+then
+    mv /dh.pem /etc/nginx/external/
+fi
 
 if [ -z ${DH_SIZE+x} ]
 then
@@ -38,16 +42,14 @@ then
   openssl dhparam -out "$DH" $DH_SIZE
 fi
 
-if [ ! -e "/etc/nginx/external/ca-cert.pem" ] || [ ! -e "/etc/nginx/external/server-key.pem" ]
+if [ ! -e "/etc/nginx/external/ca-cert.pem" ] || [ ! -e "/etc/nginx/external/server-key.pem" ] || [ ! -e "/etc/nginx/external/server-CERT.pem" ]
 then
    echo ">> GENERATING NEW KEYS"
    bash /opt/auto-generate-certs.sh
 fi
 
-echo ">> copy /etc/nginx/external/*.conf files to /etc/nginx/conf.d/"
-cp /etc/nginx/external/*.conf /etc/nginx/conf.d/ 2> /dev/null > /dev/null
+chmod 440 /etc/nginx/external/*
 
-# exec CMD
 echo ">> exec docker CMD"
 echo "$@"
 exec "$@"

@@ -42,7 +42,7 @@ services:
             - "/isard:/isard"
             - "/isard/builder:/root/.cache/virt-builder"
             - "/etc/hostname:/hostname"
-            - "viewerkeys:/etc/pki/libvirt-spice"
+            - "/isard/src/certs:/etc/pki/libvirt-spice"
         logging:
             driver: none
         networks:
@@ -61,7 +61,7 @@ services:
         hostname: isard-app
         volumes:
             - "sshkeys:/root/.ssh"
-            - "viewerkeys:/certs"
+            - "/isard/src/certs:/certs"
             - "/isard/src/isard:/isard"
         ports:
             - "65022:22"
@@ -86,7 +86,10 @@ services:
         ports:
             - "443:443"
         volumes:
-            - "viewerkeys:/etc/nginx/external"
+            - "/isard/src/certs:/etc/nginx/external"
+        volumes_from:
+         - isard-app:container_name
+         - container:container_name:rw            
         hostname: isard-nginx
         logging:
             driver: none
@@ -102,4 +105,3 @@ networks:
     main:
 volumes:
     sshkeys:
-    viewerkeys:
