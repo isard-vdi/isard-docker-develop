@@ -27,9 +27,6 @@ services:
             - "isard-database"
         hostname: isard-hypervisor
         ports:
-            - "80:80"
-            - "81:81"
-            - "82:82"
             - "65024:22"
             - "5900-5930:5900-5930"
             - "5700-5750:5700-5750"
@@ -43,8 +40,6 @@ services:
             - "/isard/builder:/root/.cache/virt-builder"
             - "/etc/hostname:/hostname"
             - "/isard/src/certs:/etc/pki/libvirt-spice"
-        logging:
-            driver: none
         networks:
             main:
                 aliases:
@@ -86,6 +81,7 @@ services:
         build:
             context: dockers/nginx        
         ports:
+            - "80:80"
             - "443:443"
         volumes:
             - "/isard/src/certs:/etc/nginx/external"
@@ -94,6 +90,8 @@ services:
         links:
             - "isard-app"
             - "isard-hypervisor"
+        logging:
+            driver: none
         networks:
             main:
                 aliases:
