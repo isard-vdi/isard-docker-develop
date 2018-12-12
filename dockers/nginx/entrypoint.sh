@@ -42,7 +42,7 @@ then
   openssl dhparam -out "$DH" $DH_SIZE
 fi
 
-if [ ! -e "/etc/nginx/external/ca-cert.pem" ] || [ ! -e "/etc/nginx/external/server-key.pem" ] || [ ! -e "/etc/nginx/external/server-CERT.pem" ]
+if [ ! -e "/etc/nginx/external/ca-cert.pem" ] || [ ! -e "/etc/nginx/external/server-key.pem" ] || [ ! -e "/etc/nginx/external/server-cert.pem" ]
 then
    echo ">> GENERATING NEW KEYS"
    bash /opt/auto-generate-certs.sh
