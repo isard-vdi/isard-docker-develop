@@ -1,0 +1,103 @@
+version: '2'
+services:
+    isard-database:
+        #restart: always
+        image: rethinkdb
+        hostname: isard-database
+        volumes:
+            - "/isard/src/database:/data"
+        ports:
+            - "8080:8080"
+            - "28015:28015"
+        expose:
+            - "28015"
+        logging:
+            driver: none
+        networks:
+            main:
+                aliases:
+                - rethinkdb
+
+    isard-hypervisor:
+        #restart: always
+        image: isard/hypervisor
+        build:
+            context: dockers/hypervisor
+        links:
+            - "isard-database"
+        hostname: isard-hypervisor
+        ports:
+            - "65024:22"
+            - "5900-5930:5900-5930"
+            - "5700-5750:5700-5750"
+            - "55900-55930:55900-55930"
+        expose:
+            - "22"
+        privileged: true
+        volumes:
+            - "sshkeys:/root/.ssh"
+            - "/isard:/isard"
+            - "/isard/builder:/root/.cache/virt-builder"
+            - "/etc/hostname:/hostname"
+            - "/isard/src/certs:/etc/pki/libvirt-spice"
+        networks:
+            main:
+                aliases:
+                - isard-hypervisor
+        command: /usr/bin/supervisord -c /etc/supervisord.conf
+        
+    isard-app:
+        #restart: always
+        image: isard/app
+        build:
+            context: dockers/app
+        links:
+            - "isard-database"
+        hostname: isard-app
+        volumes:
+            - "sshkeys:/root/.ssh"
+            - "/isard/src/certs:/certs"
+            - "/isard/src/isard:/isard"
+        ports:
+            - "65022:22"
+        expose:
+            - "5000"
+        environment:
+            PYTHONUNBUFFERED: 0
+        extra_hosts:
+            - "isard-engine:127.0.0.1"
+        logging:
+            driver: none            
+        networks:
+            main:
+                aliases:
+                - isard-app
+        command: /usr/bin/supervisord -c /etc/supervisord.conf
+
+
+    isard-nginx:
+        #restart: always
+        image: isard/nginx
+        build:
+            context: dockers/nginx        
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - "/isard/src/certs:/etc/nginx/external"
+            - "/isard/src/isard/webapp/static/viewers:/viewers"
+        hostname: isard-nginx
+        links:
+            - "isard-app"
+            - "isard-hypervisor"
+        logging:
+            driver: none
+        networks:
+            main:
+                aliases:
+                - isard-nginx
+
+networks:
+    main:
+volumes:
+    sshkeys:

@@ -1,71 +1,59 @@
-FROM fedora:latest
-ENV container docker
-RUN dnf -y update; dnf clean all
-RUN dnf -y install systemd; dnf clean all; \
-(cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
-rm -f /lib/systemd/system/multi-user.target.wants/*;\
-rm -f /etc/systemd/system/*.wants/*;\
-rm -f /lib/systemd/system/local-fs.target.wants/*; \
-rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
-rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
-rm -f /lib/systemd/system/basic.target.wants/*;\
-rm -f /lib/systemd/system/anaconda.target.wants/*;
-VOLUME [ “/sys/fs/cgroup” ]
+FROM isard/alpine-pandas:latest
+MAINTAINER isard <info@isard.com>
 
-RUN dnf -y install libvirt-daemon-driver-* libvirt-daemon libvirt-daemon-kvm qemu-kvm libvirt-client libguestfs-tools \
-python3-pip virt-install; dnf clean all;
+RUN pip3 uninstall pandas pytz python-dateutil six -y
 
-RUN ln -s /usr/bin/qemu-kvm /usr/libexec/qemu-kvm
-RUN systemctl enable libvirtd; systemctl enable virtlockd 
-
-RUN dnf install -y openssh-server && dnf clean all;
+RUN apk add qemu-system-x86_64 libvirt netcat-openbsd libvirt-daemon dbus polkit qemu-img
+RUN ln -s /usr/bin/qemu-system-x86_64 /usr/bin/qemu-kvm
+RUN apk add openssh curl bash
+RUN ssh-keygen -A
 
 RUN echo "root:isard" |chpasswd
-RUN systemctl enable sshd
-RUN sed -i 's|[#]*PermitRootLogin no|PermitRootLogin yes|g' /etc/ssh/sshd_config
-RUN sed -i 's|[#]*PasswordAuthentication no|PasswordAuthentication yes|g' /etc/ssh/sshd_config
-RUN sed -i 's|[#]*ChallengeResponseAuthentication no|ChallengeResponseAuthentication yes|g' /etc/ssh/sshd_config
-RUN sed -i 's|UsePAM no|UsePAM yes|g' /etc/ssh/sshd_config
-RUN sed -i 's|[#]*HostKey /etc/ssh/ssh_host_ecdsa_key|#HostKey /etc/ssh/ssh_host_ecdsa_key|g' /etc/ssh/sshd_config
-RUN sed -i 's|[#]*HostKey /etc/ssh/ssh_host_ed25519_key|#HostKey /etc/ssh/ssh_host_ed25519_key|g' /etc/ssh/sshd_config
+RUN sed -i 's|[#]*PermitRootLogin prohibit-password|PermitRootLogin yes|g' /etc/ssh/sshd_config
+RUN sed -i 's|[#]*PasswordAuthentication yes|PasswordAuthentication yes|g' /etc/ssh/sshd_config
+RUN sed -i 's|[#]*ChallengeResponseAuthentication yes|ChallengeResponseAuthentication yes|g' /etc/ssh/sshd_config
+RUN sed -i 's|[#]*UsePAM yes|UsePAM yes|g' /etc/ssh/sshd_config
 
-#html5 proxy
-RUN dnf install nginx -y; dnf clean all
-ADD ./dockers/hypervisor/html5/nginx.conf /etc/nginx/
-RUN systemctl enable nginx;
-
-ADD ./dockers/hypervisor/html5/requirements.pip3 /
-RUN pip3 install -r requirements.pip3
-ADD ./dockers/hypervisor/html5/start_proxy.py /
-ADD ./dockers/hypervisor/html5/html5proxy.service /etc/systemd/system/
-RUN systemctl enable html5proxy;
+RUN echo "listen_tls = 0" >> /etc/libvirt/libvirtd.conf; 
+RUN echo 'listen_tcp = 1' >> /etc/libvirt/libvirtd.conf;
 
 # libvirt configuration and certs
-RUN echo 'spice_listen = "0.0.0.0"' >> /etc/libvirt/qemu.conf; \
-echo 'spice_tls = 1' >> /etc/libvirt/qemu.conf; \
-echo 'spice_tls_x509_cert_dir = "/etc/pki/libvirt-spice"' >> /etc/libvirt/qemu.conf;
+RUN echo 'spice_listen = "0.0.0.0"' >> /etc/libvirt/qemu.conf && \
+echo 'spice_tls = 1' >> /etc/libvirt/qemu.conf && \
+echo 'spice_tls_x509_cert_dir = "/etc/pki/libvirt-spice"' >> /etc/libvirt/qemu.conf
 RUN mkdir -p /etc/pki/libvirt-spice
-ADD ./dockers/hypervisor/generate-certs.service /usr/lib/systemd/system/generate-certs.service
-ADD ./dockers/hypervisor/auto-generate-certs.sh /
-RUN chmod a+x /auto-generate-certs.sh
-RUN systemctl enable generate-certs
 
-ADD ./dockers/hypervisor/customlibvirtpost.service /usr/lib/systemd/system/customlibvirtpost.service
-ADD ./dockers/hypervisor/customlibvirtpost.sh /customlibvirtpost.sh
+# Add default network
+ADD customlibvirtpost.sh /customlibvirtpost.sh
 RUN chmod a+x /customlibvirtpost.sh
-ADD ./dockers/hypervisor/network.xml /network.xml
-RUN systemctl enable customlibvirtpost
+ADD network.xml /network.xml
 
-RUN mkdir /root/.ssh
+#RUN mkdir /root/.ssh
 
-RUN export LIBGUESTFS_BACKEND=direct
+#spice-html5 proxy
+#RUN mkdir -p /var/www/html/spice
+#COPY html5/html /var/www/html/spice
+
+ADD requirements.pip3 /
+RUN apk add --no-cache --virtual .build_deps build-base python3-dev 
+#libffi-dev openssl-dev
+RUN pip3 install websockify
+RUN apk del .build_deps
+ADD start_proxy.py /
+
 EXPOSE 22
+EXPOSE 80-82
 EXPOSE 16509
 EXPOSE 5900-5950
+EXPOSE 5700-5750
 EXPOSE 55900-55900
 
-VOLUME [ "/sys/fs/cgroup", "/isard" ]
+VOLUME ["/isard" ]
+
+RUN apk add supervisor
+RUN mkdir -p /var/log/supervisor
+COPY supervisord.conf /etc/supervisord.conf
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
 
 
-CMD ["/usr/sbin/init"]
 
