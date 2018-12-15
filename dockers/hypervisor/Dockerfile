@@ -42,7 +42,6 @@ RUN apk del .build_deps
 ADD start_proxy.py /
 
 EXPOSE 22
-EXPOSE 80-82
 EXPOSE 16509
 EXPOSE 5900-5950
 EXPOSE 5700-5750
