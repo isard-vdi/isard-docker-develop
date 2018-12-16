@@ -18,6 +18,27 @@ services:
                 aliases:
                 - rethinkdb
 
+    isard-nginx:
+        #restart: always
+        image: isard/nginx
+        build:
+            context: dockers/nginx        
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - "/isard/src/certs/default:/etc/nginx/external"
+            - "/isard/src/isard/webapp/static/viewers:/viewers"
+        hostname: isard-nginx
+        links:
+            - "isard-app"
+        logging:
+            driver: none
+        networks:
+            main:
+                aliases:
+                - isard-nginx
+                
     isard-hypervisor:
         #restart: always
         image: isard/hypervisor
@@ -70,28 +91,6 @@ services:
                 aliases:
                 - isard-app
         command: /usr/bin/supervisord -c /etc/supervisord.conf
-
-
-    isard-nginx:
-        #restart: always
-        image: isard/nginx
-        build:
-            context: dockers/nginx        
-        ports:
-            - "80:80"
-            - "443:443"
-        volumes:
-            - "/isard/src/certs/default:/etc/nginx/external"
-            - "/isard/src/isard/webapp/static/viewers:/viewers"
-        hostname: isard-nginx
-        links:
-            - "isard-app"
-        logging:
-            driver: none
-        networks:
-            main:
-                aliases:
-                - isard-nginx
 
 networks:
     main:
