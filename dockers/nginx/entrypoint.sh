@@ -42,10 +42,20 @@ then
   openssl dhparam -out "$DH" $DH_SIZE
 fi
 
-if [ ! -e "/etc/nginx/external/ca-cert.pem" ] || [ ! -e "/etc/nginx/external/server-key.pem" ] || [ ! -e "/etc/nginx/external/server-cert.pem" ]
+
+
+if [ ! -e "/etc/nginx/external/server-key.pem" ] || [ ! -e "/etc/nginx/external/server-cert.pem" ]
 then
    echo ">> GENERATING NEW KEYS"
    bash /opt/auto-generate-certs.sh
+fi
+
+## server-key and server-cert could exist if it is a verified certificate.
+## We should extract certificates from fullchain (server-cert.pem) and
+## process it in isard app (move root ca from cert.2.pem to ca-cert.pem
+## and only use it in libvirt, not int .vv files
+if [ ! -e "/etc/nginx/external/ca-cert.pem" ]
+    awk 'BEGIN {c=0;} /BEGIN CERT/{c++} { print > "cert." c ".pem"}' < server-cert.pem 
 fi
 
 chmod 440 /etc/nginx/external/*

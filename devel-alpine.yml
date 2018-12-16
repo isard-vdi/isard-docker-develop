@@ -23,8 +23,6 @@ services:
         image: isard/hypervisor
         build:
             context: dockers/hypervisor
-        links:
-            - "isard-database"
         hostname: isard-hypervisor
         ports:
             - "65024:22"
@@ -53,10 +51,11 @@ services:
             context: dockers/app
         links:
             - "isard-database"
+            - "isard-hypervisor"
         hostname: isard-app
         volumes:
             - "sshkeys:/root/.ssh"
-            - "/isard/src/certs/default:/certs"
+            - "/isard/src/certs:/certs"
             - "/isard/src/isard:/isard"
         ports:
             - "65022:22"
@@ -87,7 +86,6 @@ services:
         hostname: isard-nginx
         links:
             - "isard-app"
-            - "isard-hypervisor"
         logging:
             driver: none
         networks:
