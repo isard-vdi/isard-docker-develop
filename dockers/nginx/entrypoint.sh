@@ -55,6 +55,7 @@ fi
 ## process it in isard app (move root ca from cert.2.pem to ca-cert.pem
 ## and only use it in libvirt, not int .vv files
 if [ ! -e "/etc/nginx/external/ca-cert.pem" ]
+then
     awk 'BEGIN {c=0;} /BEGIN CERT/{c++} { print > "cert." c ".pem"}' < server-cert.pem 
 fi
 

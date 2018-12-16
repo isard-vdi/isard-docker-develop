@@ -33,7 +33,7 @@ services:
         links:
             - "isard-app"
         logging:
-            driver: none
+            driver: none            
         networks:
             main:
                 aliases:
