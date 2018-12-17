@@ -20,10 +20,10 @@ openssl genrsa -out server-key.pem 2048
 
 echo 'Create a certificate signing request for the server.'
 openssl req -new -key server-key.pem -sha256 -out server-key.csr \
-          -subj "CN=$CN_HOST"
+          -subj "/CN=$CN_HOST"
 
 echo 'Create  server certificates:'
-openssl x509 -req -days 3650 -in server-key.csr -CA ca-cert.pem -CAkey ca-key.pem \
+openssl x509 -req -days 9999 -in server-key.csr -CA ca-cert.pem -CAkey ca-key.pem \
           -set_serial 94345 -sha256 -out server-cert.pem
           
 chmod 440 *

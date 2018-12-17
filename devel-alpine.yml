@@ -32,8 +32,8 @@ services:
         hostname: isard-nginx
         links:
             - "isard-app"
-        logging:
-            driver: none            
+#        logging:
+#            driver: none
         networks:
             main:
                 aliases:
